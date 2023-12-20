@@ -3,6 +3,8 @@ import urllib.parse
 
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.vectorstores.faiss import FAISS
+from langchain.embeddings import OpenAIEmbeddings
 
 AWS_BUCKET = 'chatbot-data-storage'
 
@@ -23,6 +25,8 @@ def s3PdfDoader(s3_path):
 
 
 def handler(event, context):
+    embeddings = OpenAIEmbeddings()
+
     s3_path = urllib.parse.unquote(
         event['Records'][0]['s3']['object']['key']
     )
@@ -40,3 +44,9 @@ def handler(event, context):
     )
     
     print('documents: ', documents)
+
+    vector_store = FAISS.from_documents(documents=documents, embedding=embeddings)
+    print('vector_store: ', vector_store)
+
+    serialized_vector_store = vector_store.serialize_to_bytes()
+    print('serialized_vector_store: ', serialized_vector_store)
