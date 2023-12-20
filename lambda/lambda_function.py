@@ -19,7 +19,6 @@ def s3PdfDoader(s3_path):
 
     with open(tmp_path, 'wb') as f:
         f.write(pdf_obj)
-        print('f: ', f)
 
     return PyPDFLoader(tmp_path)
 
@@ -40,7 +39,9 @@ def handler(event, context):
 
     text = ''
     for x in documents:
-        text + x.page_content
+        text = text + x.page_content
+        print(x)
+
     print('text: ', text)
 
     # documents = loader.load_and_split(
