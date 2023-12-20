@@ -38,13 +38,13 @@ def get_documents(text):
 
     system = "入力された内容を次のフォーマットで内容ごとに日本語でまとめてグループ分けしてください。"
     template = """
-      [{
+      [(
         content_detail: "詳細な内容",
-        meta_data: {
+        meta_data: (
           content_outline: "どのグループに属しているか",
           number: "グループ内での番号"
-        }
-      }]
+        )
+      )]
     """
     human = "{text}"
 
