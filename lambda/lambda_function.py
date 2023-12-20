@@ -11,8 +11,10 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import (
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
-    ChatPromptTemplate
+    ChatPromptTemplate,
+    
 )
+from langchain.schema import HumanMessage, SystemMessage
 
 AWS_BUCKET = 'chatbot-data-storage'
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
@@ -36,18 +38,29 @@ def s3PdfDoader(s3_path):
 def get_documents(text):
     chat = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-3.5-turbo")
 
-    system = "入力された内容を次のフォーマットで内容ごとに日本語でまとめてグループ分けしてください。"
-    template = """[(content_detail: "詳細な内容",meta_data: (content_outline: "どのグループに属しているか",number: "グループ内での番号")), (content_detail: "詳細な内容",meta_data: (content_outline: "どのグループに属しているか",number: "グループ内での番号")), (content_detail: "詳細な内容",meta_data: (content_outline: "どのグループに属しているか",number: "グループ内での番号")),], """
-    human = "{text}"
+    # system = "入力された内容を次のフォーマットで内容ごとに日本語でまとめてグループ分けしてください。"
+    # human = "{text}"
 
-    system_prompt = SystemMessagePromptTemplate.from_template(system)
-    temlate_prompt = SystemMessagePromptTemplate.from_template(template)
-    human_prompt = HumanMessagePromptTemplate.from_template(human)
+    # system_prompt = SystemMessagePromptTemplate.from_template(system)
+    # temlate_prompt = SystemMessagePromptTemplate.from_template(template)
+    # human_prompt = HumanMessagePromptTemplate.from_template(human)
 
-    chat_prompt = ChatPromptTemplate.from_messages([system_prompt, temlate_prompt, human_prompt])
-    res = chat(chat_prompt.format_prompt(text=text).to_messages())
+    # chat_prompt = ChatPromptTemplate.from_messages([system_prompt, temlate_prompt, human_prompt])
+    # res = chat(chat_prompt.format_prompt(text=text).to_messages())
 
-    print('AIMessage: ', res)
+    # print('AIMessage: ', res)
+
+
+
+    chat([
+        SystemMessage(
+            content="入力された内容を以下のフォーマットでまとめ直してください"
+        ),
+        SystemMessage(
+            content=template
+        ),
+        HumanMessage()
+    ])
 
 
 
