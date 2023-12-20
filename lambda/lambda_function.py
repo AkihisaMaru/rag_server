@@ -42,7 +42,8 @@ def handler(event, context):
     #         chunk_overlap=20
     #     )
     # )
-    documents = loader.load_and_split()
+    # documents = loader.load_and_split()
+    documents = loader.load()
 
     for x, y in enumerate(documents):
         print(f'page {x}: {y.page_content}')
