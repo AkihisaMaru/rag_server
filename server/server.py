@@ -1,4 +1,14 @@
+import os
+
 from fastapi import FastAPI
+
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores.faiss import FAISS
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
 
 app = FastAPI(
   title='langchain server',
