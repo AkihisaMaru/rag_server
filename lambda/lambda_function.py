@@ -41,7 +41,7 @@ def handler(event, context):
     text = ''
     for x in documents:
         text + x.page_content
-    print('text: 'text)
+    print('text: ', text)
 
     # documents = loader.load_and_split(
     #     text_splitter=CharacterTextSplitter(
