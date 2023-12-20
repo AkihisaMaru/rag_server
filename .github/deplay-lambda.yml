@@ -1,0 +1,70 @@
+name: Deploy to ECR, Lambda
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # ##################### Set environment variables ########################
+      - name: Set environment variables
+        run: |
+          echo "OPENAI_API_KEY=${ secrets.OPENAI_API_KEY }" > .env
+
+      # ############################# setup aws ################################
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # ############## setup docker and buildx #################################
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Cache Python Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # ############################# build and push ################################
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-and-push
+        uses: docker/build-push-action@v3.3.0
+        with:
+          context: lambda/.
+          file: lambda/Dockerfile
+          # provenance file is not supported by buildx
+          provenance: false
+          push: true
+          # tags: ${{ steps.login-ecr.outputs.registry }}/embedding:latest
+          tags: ${{ steps.login-ecr.outputs.registry }}/embedding:${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      # ############################# lambda reload #################################
+      - name: Update AWS Lambda function
+        run: |
+          aws lambda update-function-code --function-name embedding --image-uri ${{ fromJSON(steps.build-and-push.outputs.metadata)['image.name'] }}
