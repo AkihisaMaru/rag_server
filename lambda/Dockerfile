@@ -1,6 +1,6 @@
 FROM public.ecr.aws/lambda/python:3.10
 
-WORKDIR /app
+WORKDIR ${LAMBDA_TASK_ROOT}
 
 RUN pip install --upgrade pip --no-cache-dir
 
