@@ -35,6 +35,14 @@ def handler(event, context):
 
     
     loader = s3PdfDoader(s3_path)
+  
+    documents = loader.load()
+
+    text = ''
+    for x in documents:
+        text + x.page_content
+    print('text: 'text)
+
     # documents = loader.load_and_split(
     #     text_splitter=CharacterTextSplitter(
     #         separator='\n',
@@ -43,10 +51,7 @@ def handler(event, context):
     #     )
     # )
     # documents = loader.load_and_split()
-    documents = loader.load()
-
-    for x, y in enumerate(documents):
-        print(f'page {x}: {y.page_content}')
+    # documents = loader.load()
     
     print('documents: ', documents)
 
