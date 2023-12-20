@@ -7,6 +7,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 
+from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import (
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
@@ -77,7 +78,6 @@ def handler(event, context):
     for x in documents:
         text = text + x.page_content
 
-    print('text: ', text)
 
     get_documents(text)
 
