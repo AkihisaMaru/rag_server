@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  langserver:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    command: python server.py
