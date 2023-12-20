@@ -37,15 +37,7 @@ def get_documents(text):
     chat = ChatOpenAI(api_key=OPENAI_API_KEY, model="gpt-3.5-turbo")
 
     system = "入力された内容を次のフォーマットで内容ごとに日本語でまとめてグループ分けしてください。"
-    template = """
-      [(
-        content_detail: "詳細な内容",
-        meta_data: (
-          content_outline: "どのグループに属しているか",
-          number: "グループ内での番号"
-        )
-      )]
-    """
+    template = """[(content_detail: "詳細な内容",meta_data: (content_outline: "どのグループに属しているか",number: "グループ内での番号")), (content_detail: "詳細な内容",meta_data: (content_outline: "どのグループに属しているか",number: "グループ内での番号")), (content_detail: "詳細な内容",meta_data: (content_outline: "どのグループに属しているか",number: "グループ内での番号")),], """
     human = "{text}"
 
     system_prompt = SystemMessagePromptTemplate.from_template(system)
