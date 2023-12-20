@@ -40,6 +40,3 @@ def handler(event, context):
     )
     
     print('documents: ', documents)
-
-
-
