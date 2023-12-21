@@ -52,16 +52,20 @@ def get_documents(text):
 
 
 
-    res = chat([
+    message = [
         SystemMessage(
             content="以下にかかれている内容を箇条書きでまとめてください"
         ),
         # SystemMessage(
         #     content=template
         # ),
-        HumanMessage(text)
-    ])
+        HumanMessage(content=text)
+    ]
+
+    res = chat.invoke(message)
+
     print(res)
+    return res
 
 
 
@@ -77,7 +81,7 @@ def handler(event, context):
 
     
     loader = s3PdfDoader(s3_path)
-  
+
     documents = loader.load()
 
     text = ''
