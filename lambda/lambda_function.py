@@ -8,12 +8,12 @@ from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import OpenAIEmbeddings
 
 from langchain.chat_models import ChatOpenAI
-from langchain.prompts.chat import (
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate,
-    ChatPromptTemplate,
+# from langchain.prompts.chat import (
+#     SystemMessagePromptTemplate,
+#     HumanMessagePromptTemplate,
+#     ChatPromptTemplate,
     
-)
+# )
 from langchain.schema import HumanMessage, SystemMessage
 
 AWS_BUCKET = 'chatbot-data-storage'
@@ -52,20 +52,21 @@ def get_documents(text):
 
 
 
-    chat([
+    res = chat([
         SystemMessage(
-            content="入力された内容を以下のフォーマットでまとめ直してください"
+            content="以下にかかれている内容を箇条書きでまとめてください"
         ),
-        SystemMessage(
-            content=template
-        ),
-        HumanMessage()
+        # SystemMessage(
+        #     content=template
+        # ),
+        HumanMessage(text)
     ])
+    print(res)
 
 
 
 def handler(event, context):
-    embeddings = OpenAIEmbeddings()
+    # embeddings = OpenAIEmbeddings()
 
 
     s3_path = urllib.parse.unquote(
